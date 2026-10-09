@@ -95,20 +95,6 @@
             <li><a href="https://www.adherity.ai/" target="_blank" rel="noopener noreferrer">Adherity<span class="sr"> (opens in a new tab)</span></a></li>
           </ul>
         </section>
-        <section class="panel">
-          <h2>Company email</h2>
-          <p>This inbox is on the company domain.</p>
-          <p><a href="mailto:account@skitso.design">account@skitso.design</a></p>
-        </section>
-        <section class="panel">
-          <h2>Registered office</h2>
-          <address>
-            SKITSO DESIGN STUDIOS PRIVATE LIMITED<br>
-            13-b Mahi Sarovar Nagar, Banswara (rural), Banswara City<br>
-            Banswara, Rajasthan 327001<br>
-            India
-          </address>
-        </section>
       </div>
     </div>
   </main>
@@ -118,8 +104,6 @@
       <div class="footer-brand">
         <img src="/images/logo.png" alt="" width="102" height="30">
         <strong>SKITSO DESIGN STUDIOS PRIVATE LIMITED</strong>
-        <p>13-b Mahi Sarovar Nagar, Banswara (rural), Banswara City, Banswara, Rajasthan 327001, India</p>
-        <p><a href="mailto:account@skitso.design">account@skitso.design</a> · CIN U62012RJ2024PTC096117</p>
       </div>
       <nav aria-label="Footer">
         <a href="/schoool/">Schoool</a>
@@ -128,7 +112,7 @@
         <a href="/company/">Company</a>
         <a href="/contact/">Contact</a>
         <a href="/privacy/">Privacy</a>
-        <a href="https://www.linkedin.com/company/skitso-design" rel="noopener noreferrer">LinkedIn</a>
+        <a href="https://www.linkedin.com/company/skitso-design" target="_blank" rel="noopener noreferrer">LinkedIn<span class="sr"> (opens in a new tab)</span></a>
       </nav>
     </div>
   </footer>
@@ -182,8 +166,8 @@
         }).then(function (result) {
           var flag = result.body && result.body.success;
           if (result.ok && (flag === true || flag === "true")) showSent();
-          else showError();
-        }).catch(showError);
+          else showError(result.body && result.body.message);
+        }).catch(function () { showError(); });
 
         function showSent() {
           form.classList.add("is-sent");
@@ -194,11 +178,22 @@
           status.focus();
         }
 
-        function showError() {
+        function showError(detail) {
           button.disabled = false;
           status.hidden = false;
           status.dataset.state = "error";
           status.textContent = "";
+          if (detail && /activ/i.test(detail)) {
+            status.appendChild(document.createTextNode("FormSubmit has not been activated yet, so the inquiry was not delivered. Open the activation email sent to "));
+            var activate = document.createElement("a");
+            activate.href = "mailto:account@skitso.design";
+            activate.textContent = "account@skitso.design";
+            status.appendChild(activate);
+            status.appendChild(document.createTextNode(" and click Activate Form, then submit again."));
+            status.tabIndex = -1;
+            status.focus();
+            return;
+          }
           status.appendChild(document.createTextNode("The inquiry was not sent. You can try again, or write directly to "));
           var link = document.createElement("a");
           link.href = "mailto:account@skitso.design";
